@@ -1,7 +1,6 @@
 package com.example.biometricsandroid.cryptography
 
 import android.content.Context
-import com.example.biometricsandroid.CipherTextWrapper
 import javax.crypto.Cipher
 
 /**

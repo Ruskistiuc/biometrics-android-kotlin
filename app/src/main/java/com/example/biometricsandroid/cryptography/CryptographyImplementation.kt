@@ -1,9 +1,8 @@
-package com.example.biometricsandroid
+package com.example.biometricsandroid.cryptography
 
 import android.content.Context
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
-import com.example.biometricsandroid.cryptography.CryptographyManager
 import com.google.gson.Gson
 import java.nio.charset.Charset
 import java.security.KeyStore
