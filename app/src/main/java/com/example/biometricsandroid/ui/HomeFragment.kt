@@ -36,8 +36,10 @@ class HomeFragment : Fragment() {
             } else {
                 SampleAppUser.fakeToken = null
                 SampleAppUser.username = ""
+
+                // Delete all data saved in sharedPreferences
                 context?.getSharedPreferences(SHARED_PREFS_FILENAME, Context.MODE_PRIVATE)?.edit()
-                    ?.remove(CIPHER_TEXT_WRAPPER)?.apply()
+                    ?.clear()?.apply()
             }
         }
 

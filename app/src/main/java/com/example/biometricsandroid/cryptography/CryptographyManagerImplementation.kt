@@ -105,6 +105,3 @@ private class CryptographyManagerImplementation : CryptographyManager {
         return Gson().fromJson(json, CipherTextWrapper::class.java)
     }
 }
-
-
-data class CipherTextWrapper(val cipherText: ByteArray, val initializationVector: ByteArray)

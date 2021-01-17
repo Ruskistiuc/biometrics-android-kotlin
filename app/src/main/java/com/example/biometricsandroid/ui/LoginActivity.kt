@@ -36,7 +36,7 @@ class LoginActivity : AppCompatActivity() {
 //            }
 //        }
 //
-//        login()
+        login()
     }
 
     /**
@@ -101,15 +101,21 @@ class LoginActivity : AppCompatActivity() {
 
     private fun login() {
         binding.loginBtn.setOnClickListener {
-            // Normally this method would asynchronously send this to your server and your sever
-            // would return a token. For high sensitivity apps such as banking, you would keep that
-            // token in transient memory similar to my SampleAppUser object. This way the user
-            // must login each time they start the app.
-            // In this sample, we don't call a server. Instead we use a fake token that we set
-            // right here:
+            /**
+             * Normally this method would asynchronously send this to your server and your sever
+             * would return a token.
+             * In this sample, we don't call a server.
+             * Instead we use a fake token that we set right here:
+             */
 
-            SampleAppUser.username = binding.usernameEditText.text.toString()
-            SampleAppUser.fakeToken = java.util.UUID.randomUUID().toString()
+            val username = binding.usernameEditText.text.toString()
+            val fakeToken = java.util.UUID.randomUUID().toString()
+
+            val sharedPreferences = getSharedPreferences(SHARED_PREFS_FILENAME, MODE_PRIVATE)
+            sharedPreferences.edit()
+                .putString(username, "")
+                .putString(fakeToken, "")
+                .apply()
 
             val intent = Intent(this, MainActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

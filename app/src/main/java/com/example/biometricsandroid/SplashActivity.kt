@@ -7,10 +7,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.lifecycleScope
 import com.example.biometricsandroid.cryptography.CryptographyManager
 import com.example.biometricsandroid.databinding.ActivitySplashBinding
 import com.example.biometricsandroid.ui.LoginActivity
 import com.example.biometricsandroid.ui.MainActivity
+import kotlinx.coroutines.delay
 
 /**
  * FROM:
@@ -35,12 +37,27 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_splash)
 
+        // Just to simulate background work while showing SplashActivity
+        lifecycleScope.launchWhenCreated {
+            delay(1500)
+            auth()
+        }
+    }
+
+    private fun auth() {
         val canAuthenticate = BiometricManager.from(this).canAuthenticate()
 
         if (canAuthenticate == BiometricManager.BIOMETRIC_SUCCESS) {
             /** Biometric can currently be used */
             if (cipherTextWrapper != null) {
+                /** If the Biometric was already enrolled (NOT FIRST TIME APP OPENING)*/
                 showBiometricPromptForDecryption()
+            } else {
+                /** Biometric can be used but is not enrolled yet (FIRST TIME APP OPENING)*/
+                // Navigate to LoginActivity in order to insert the credentials
+                val intent = Intent(this, LoginActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
             }
         } else {
             /**
