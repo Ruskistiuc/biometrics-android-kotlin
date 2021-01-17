@@ -19,11 +19,13 @@ fun CryptographyManager(): CryptographyManager = CryptographyManagerImplementati
  */
 private class CryptographyManagerImplementation : CryptographyManager {
 
-    private val KEY_SIZE = 256
-    private val ANDROID_KEYSTORE = "AndroidKeyStore"
-    private val ENCRYPTION_BLOCK_MODE = KeyProperties.BLOCK_MODE_GCM
-    private val ENCRYPTION_PADDING = KeyProperties.ENCRYPTION_PADDING_NONE
-    private val ENCRYPTION_ALGORITHM = KeyProperties.KEY_ALGORITHM_AES
+    companion object {
+        private const val KEY_SIZE = 256
+        private const val ANDROID_KEYSTORE = "AndroidKeyStore"
+        private const val ENCRYPTION_BLOCK_MODE = KeyProperties.BLOCK_MODE_GCM
+        private const val ENCRYPTION_PADDING = KeyProperties.ENCRYPTION_PADDING_NONE
+        private const val ENCRYPTION_ALGORITHM = KeyProperties.KEY_ALGORITHM_AES
+    }
 
     override fun getInitializedCipherForEncryption(keyName: String): Cipher {
         val cipher = getCipher()

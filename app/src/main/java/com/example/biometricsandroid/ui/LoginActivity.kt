@@ -33,8 +33,9 @@ class LoginActivity : AppCompatActivity() {
             val username = binding.usernameEditText.text.toString()
             val token = java.util.UUID.randomUUID().toString()
 
-            val sharedPreferences = getSharedPreferences(SHARED_PREFS_FILENAME, MODE_PRIVATE)
-            sharedPreferences.edit()
+            // Save Username and plain text token in sharedPreferences
+            getSharedPreferences(SHARED_PREFS_FILENAME, MODE_PRIVATE)
+                .edit()
                 .putString(USERNAME, username)
                 .putString(TOKEN, token)
                 .apply()
