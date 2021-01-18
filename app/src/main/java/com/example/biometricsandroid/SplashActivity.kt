@@ -3,6 +3,7 @@ package com.example.biometricsandroid
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
@@ -82,7 +83,9 @@ class SplashActivity : AppCompatActivity() {
             biometricPrompt =
                 BiometricPromptUtils.createBiometricPrompt(
                     this,
-                    ::decryptServerTokenFromStorage
+                    ::onSuccess,
+                    ::onFail,
+                    ::onErrorOrPIN
                 )
 
             val promptInfo = BiometricPromptUtils.createPromptInfo(this)
@@ -90,12 +93,15 @@ class SplashActivity : AppCompatActivity() {
         }
     }
 
-    private fun decryptServerTokenFromStorage(authResult: BiometricPrompt.AuthenticationResult) {
+    private fun onSuccess(authResult: BiometricPrompt.AuthenticationResult) {
+        /** Decrypt server token from storage */
         cipherTextWrapper?.let { textWrapper ->
             authResult.cryptoObject?.cipher?.let {
+                // 1) Decrypt saved cipher token
                 val token =
                     cryptographyManager.decryptData(textWrapper.cipherText, it)
-                // Save token to sharedPreferences
+
+                // 2) Save plain text token to sharedPreferences
                 getSharedPreferences(SHARED_PREFS_FILENAME, MODE_PRIVATE).edit()
                     .putString(TOKEN, token).apply()
 
@@ -111,5 +117,13 @@ class SplashActivity : AppCompatActivity() {
                 startActivity(intent)
             }
         }
+    }
+
+    private fun onFail() {
+        Toast.makeText(this, "FAILED", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun onErrorOrPIN(errCode: Int) {
+        Toast.makeText(this, "ERROR OR PIN", Toast.LENGTH_SHORT).show()
     }
 }

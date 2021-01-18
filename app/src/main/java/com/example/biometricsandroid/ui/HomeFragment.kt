@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.fragment.app.Fragment
@@ -48,25 +47,12 @@ class HomeFragment : Fragment() {
     private fun onBiometricSwitchListener() {
         binding.biometricSwitch.setOnCheckedChangeListener { _, isChecked ->
             sharedPreferences.edit().putBoolean(IS_BIOMETRIC_ENABLED, isChecked).apply()
-
             if (isChecked) {
-                // showBiometricPromptForEncryption()
-                Toast.makeText(requireContext(), "Show biometric prompt", Toast.LENGTH_SHORT).show()
+                showBiometricPromptForEncryption()
             } else {
-                // Remove token from sharedPreferences
+                // Remove cipher token from sharedPreferences
                 sharedPreferences.edit().remove(CIPHER_TEXT_WRAPPER).apply()
             }
-        }
-    }
-
-    private fun logout() {
-        binding.logoutBtn.setOnClickListener {
-            // Delete all data saved in sharedPreferences
-            sharedPreferences.edit().clear().apply()
-
-            val intent = Intent(context, LoginActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(intent)
         }
     }
 
@@ -77,17 +63,22 @@ class HomeFragment : Fragment() {
             val secretKeyName = getString(R.string.secret_key_name)
             cryptographyManager = CryptographyManager()
             val cipher = cryptographyManager.getInitializedCipherForEncryption(secretKeyName)
+
             val biometricPrompt =
                 BiometricPromptUtils.createBiometricPrompt(
                     activity as MainActivity,
-                    ::encryptAndStoreServerToken
+                    ::onSuccess,
+                    ::onFail,
+                    ::onErrorOrPIN
                 )
+
             val promptInfo = BiometricPromptUtils.createPromptInfo(activity as MainActivity)
             biometricPrompt.authenticate(promptInfo, BiometricPrompt.CryptoObject(cipher))
         }
     }
 
-    private fun encryptAndStoreServerToken(authResult: BiometricPrompt.AuthenticationResult) {
+    private fun onSuccess(authResult: BiometricPrompt.AuthenticationResult) {
+        /** Encrypt and store server token */
         authResult.cryptoObject?.cipher?.apply {
             // 1) Get current plain text token
             val token = sharedPreferences.getString(TOKEN, null)
@@ -103,6 +94,26 @@ class HomeFragment : Fragment() {
                 Context.MODE_PRIVATE,
                 CIPHER_TEXT_WRAPPER
             )
+        }
+    }
+
+    private fun onErrorOrPIN(errCode: Int) {
+        // Unchecked Biometric switch
+        binding.biometricSwitch.isChecked = false
+    }
+
+    private fun onFail() {
+        // TODO
+    }
+
+    private fun logout() {
+        binding.logoutBtn.setOnClickListener {
+            // Delete all data saved in sharedPreferences
+            sharedPreferences.edit().clear().apply()
+
+            val intent = Intent(context, LoginActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
         }
     }
 }
