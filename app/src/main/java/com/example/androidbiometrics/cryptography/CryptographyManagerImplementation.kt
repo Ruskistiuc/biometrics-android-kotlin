@@ -1,4 +1,4 @@
-package com.example.biometricsandroid.cryptography
+package com.example.androidbiometrics.cryptography
 
 import android.content.Context
 import android.security.keystore.KeyGenParameterSpec

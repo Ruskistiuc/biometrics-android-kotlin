@@ -1,4 +1,4 @@
-package com.example.biometricsandroid
+package com.example.androidbiometrics
 
 import android.content.Context
 import android.content.Intent
@@ -9,9 +9,9 @@ import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
-import com.example.biometricsandroid.cryptography.CryptographyManager
-import com.example.biometricsandroid.databinding.ActivitySplashBinding
-import com.example.biometricsandroid.ui.MainActivity
+import com.example.androidbiometrics.cryptography.CryptographyManager
+import com.example.androidbiometrics.databinding.ActivitySplashBinding
+import com.example.androidbiometrics.ui.MainActivity
 import kotlinx.coroutines.delay
 
 /**

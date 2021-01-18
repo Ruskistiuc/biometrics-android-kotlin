@@ -1,4 +1,4 @@
-package com.example.biometricsandroid.ui.home
+package com.example.androidbiometrics.ui.home
 
 import android.content.Context
 import android.content.Intent
@@ -9,10 +9,10 @@ import android.view.ViewGroup
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.fragment.app.Fragment
-import com.example.biometricsandroid.*
-import com.example.biometricsandroid.cryptography.CryptographyManager
-import com.example.biometricsandroid.databinding.FragmentHomeBinding
-import com.example.biometricsandroid.ui.MainActivity
+import com.example.androidbiometrics.*
+import com.example.androidbiometrics.cryptography.CryptographyManager
+import com.example.androidbiometrics.databinding.FragmentHomeBinding
+import com.example.androidbiometrics.ui.MainActivity
 
 class HomeFragment : Fragment() {
 

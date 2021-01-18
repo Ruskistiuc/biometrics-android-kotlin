@@ -1,4 +1,4 @@
-package com.example.biometricsandroid.cryptography
+package com.example.androidbiometrics.cryptography
 
 data class CipherTextWrapper(
     val cipherText: ByteArray,

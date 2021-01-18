@@ -1,8 +1,8 @@
-package com.example.biometricsandroid.ui
+package com.example.androidbiometrics.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.example.biometricsandroid.R
+import com.example.androidbiometrics.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

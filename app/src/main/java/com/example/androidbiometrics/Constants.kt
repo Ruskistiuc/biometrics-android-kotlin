@@ -1,4 +1,4 @@
-package com.example.biometricsandroid
+package com.example.androidbiometrics
 
 const val SHARED_PREFS_FILENAME = "biometricPrefs"
 const val CIPHER_TEXT_WRAPPER = "cipherTextWrapper"

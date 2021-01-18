@@ -1,11 +1,11 @@
-package com.example.biometricsandroid
+package com.example.androidbiometrics
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import com.example.biometricsandroid.databinding.ActivityLoginBinding
-import com.example.biometricsandroid.ui.MainActivity
+import com.example.androidbiometrics.databinding.ActivityLoginBinding
+import com.example.androidbiometrics.ui.MainActivity
 
 class LoginActivity : AppCompatActivity() {
 

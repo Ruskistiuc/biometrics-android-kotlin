@@ -1,4 +1,4 @@
-package com.example.biometricsandroid
+package com.example.androidbiometrics
 
 import org.junit.Assert.assertEquals
 import org.junit.Test

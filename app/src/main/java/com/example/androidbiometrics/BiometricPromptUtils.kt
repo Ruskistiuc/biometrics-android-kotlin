@@ -1,4 +1,4 @@
-package com.example.biometricsandroid
+package com.example.androidbiometrics
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricPrompt

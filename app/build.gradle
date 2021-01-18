@@ -10,7 +10,7 @@ android {
     buildToolsVersion "30.0.2"
 
     defaultConfig {
-        applicationId "com.example.biometricsandroid"
+        applicationId "com.example.androidbiometrics"
         minSdkVersion 26
         targetSdkVersion 30
         versionCode 1
