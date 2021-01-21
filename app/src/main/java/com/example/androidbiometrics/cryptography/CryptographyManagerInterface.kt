@@ -4,7 +4,7 @@ import android.content.Context
 import javax.crypto.Cipher
 
 /** Handles encryption and decryption */
-interface CryptographyManager {
+interface CryptographyManagerInterface {
 
     fun getInitializedCipherForEncryption(keyName: String): Cipher
 

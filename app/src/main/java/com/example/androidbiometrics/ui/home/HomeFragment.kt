@@ -9,21 +9,30 @@ import android.view.ViewGroup
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.fragment.app.Fragment
-import com.example.androidbiometrics.*
-import com.example.androidbiometrics.cryptography.CryptographyManager
+import com.example.androidbiometrics.BiometricPromptUtils
+import com.example.androidbiometrics.CIPHER_TEXT_WRAPPER
+import com.example.androidbiometrics.IS_BIOMETRIC_ENABLED
+import com.example.androidbiometrics.LoginActivity
+import com.example.androidbiometrics.R
+import com.example.androidbiometrics.SHARED_PREFS_FILENAME
+import com.example.androidbiometrics.TOKEN
+import com.example.androidbiometrics.USERNAME
+import com.example.androidbiometrics.cryptography.CryptographyManagerInterface
+import com.example.androidbiometrics.cryptography.getCryptographyManager
 import com.example.androidbiometrics.databinding.FragmentHomeBinding
 import com.example.androidbiometrics.ui.MainActivity
 
 class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
-    private lateinit var cryptographyManager: CryptographyManager
+    private lateinit var cryptographyManager: CryptographyManagerInterface
     private val sharedPreferences by lazy {
         requireContext().getSharedPreferences(SHARED_PREFS_FILENAME, Context.MODE_PRIVATE)
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHomeBinding.inflate(inflater)
@@ -62,8 +71,9 @@ class HomeFragment : Fragment() {
         if (canAuthenticate == BiometricManager.BIOMETRIC_SUCCESS) {
             // TODO what is secretKeyName ? Use BiometricPrompt to unlock the secret key
             val secretKeyName = getString(R.string.secret_key_name)
-            cryptographyManager = CryptographyManager()
-            val cipher = cryptographyManager.getInitializedCipherForEncryption(secretKeyName)
+            cryptographyManager = getCryptographyManager()
+            val cipher =
+                cryptographyManager.getInitializedCipherForEncryption(secretKeyName)
 
             val biometricPrompt =
                 BiometricPromptUtils.createBiometricPrompt(
@@ -85,7 +95,8 @@ class HomeFragment : Fragment() {
             val token = sharedPreferences.getString(TOKEN, null)
 
             // 2) Encrypt current token
-            val encryptedServerTokenWrapper = cryptographyManager.encryptData(token!!, this)
+            val encryptedServerTokenWrapper =
+                cryptographyManager.encryptData(token!!, this)
 
             // 3) Save encrypted token to sharedPreferences
             cryptographyManager.persistCipherTextWrapperToSharedPrefs(

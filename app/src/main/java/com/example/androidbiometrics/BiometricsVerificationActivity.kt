@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.databinding.DataBindingUtil
-import com.example.androidbiometrics.cryptography.CryptographyManager
+import com.example.androidbiometrics.cryptography.getCryptographyManager
 import com.example.androidbiometrics.databinding.ActivityBiometricsVerificationBinding
 import com.example.androidbiometrics.ui.MainActivity
 
@@ -22,7 +22,7 @@ class BiometricsVerificationActivity : AppCompatActivity() {
     private lateinit var biometricPrompt: BiometricPrompt
     private lateinit var binding: ActivityBiometricsVerificationBinding
 
-    private val cryptographyManager = CryptographyManager()
+    private val cryptographyManager = getCryptographyManager()
     private val cipherTextWrapper
         get() = cryptographyManager.getCipherTextWrapperFromSharedPrefs(
             this,
@@ -89,7 +89,8 @@ class BiometricsVerificationActivity : AppCompatActivity() {
             // TODO what is secretKeyName ? Get Secret Key alias from the app's memory
             val secretKeyName = getString(R.string.secret_key_name)
             val cipher = cryptographyManager.getInitializedCipherForDecryption(
-                secretKeyName, textWrapper.initializationVector
+                secretKeyName,
+                textWrapper.initializationVector
             )
 
             biometricPrompt =
