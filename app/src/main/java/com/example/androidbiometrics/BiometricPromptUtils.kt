@@ -4,12 +4,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 
+/**
+ * Android Biometric APIs - Using Crypto Objects in Kotlin:
+ * https://nik.re/posts/2019-11-30/new_android_biometric_apis
+ */
 object BiometricPromptUtils {
+
     fun createBiometricPrompt(
         activity: AppCompatActivity,
         processSuccess: (BiometricPrompt.AuthenticationResult) -> Unit,
         processFail: () -> Unit,
-        processErrorOrUsePIN: (Int) -> Unit
+        processErrorOrCancel: (Int) -> Unit
     ): BiometricPrompt {
         val executor = ContextCompat.getMainExecutor(activity)
 
@@ -29,24 +34,31 @@ object BiometricPromptUtils {
              * errCode: 7
              * errString: "Too many attempts. Try again later."
              *
+             * errCode: 10
+             * errString: "Fingerprint operation cancelled by user."
+             *
              * errCode: 13
-             * errString: "Use PIN" this is our setNegativeButtonText from BiometricPrompt
+             * errString: "Cancel" this is our setNegativeButtonText from BiometricPrompt.PromptInfo
              */
             override fun onAuthenticationError(errCode: Int, errString: CharSequence) {
                 super.onAuthenticationError(errCode, errString)
-                processErrorOrUsePIN(errCode)
+                processErrorOrCancel(errCode)
             }
         }
         return BiometricPrompt(activity, executor, callback)
     }
 
-    // TODO study about setDeviceCredentialAllowed(true)
     fun createPromptInfo(activity: AppCompatActivity): BiometricPrompt.PromptInfo =
         BiometricPrompt.PromptInfo.Builder().apply {
             setTitle(activity.getString(R.string.prompt_info_title))
             setSubtitle(activity.getString(R.string.prompt_info_subtitle))
             setDescription(activity.getString(R.string.prompt_info_description))
             setConfirmationRequired(false)
-            setNegativeButtonText(activity.getString(R.string.prompt_info_use_app_pin))
+            /**
+             * setDeviceCredentialAllowed(boolean) and setNegativeButtonText(String)
+             * Can't be applied simultaneously! See setDeviceCredentialAllowed description
+             */
+//            setDeviceCredentialAllowed(true)
+            setNegativeButtonText(activity.getString(R.string.prompt_info_negative_button))
         }.build()
 }

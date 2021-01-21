@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.fragment.app.Fragment
@@ -80,11 +81,14 @@ class HomeFragment : Fragment() {
                     activity as MainActivity,
                     ::onSuccess,
                     ::onFail,
-                    ::onErrorOrPIN
+                    ::onErrorOrCancel
                 )
 
             val promptInfo = BiometricPromptUtils.createPromptInfo(activity as MainActivity)
             biometricPrompt.authenticate(promptInfo, BiometricPrompt.CryptoObject(cipher))
+
+            // TODO in order to support setDeviceCredentialAllowed inside createPromptInfo we need to ignore CryptoObject
+            // biometricPrompt.authenticate(promptInfo)
         }
     }
 
@@ -106,16 +110,28 @@ class HomeFragment : Fragment() {
                 Context.MODE_PRIVATE,
                 CIPHER_TEXT_WRAPPER
             )
+
+            Toast.makeText(
+                requireContext(),
+                "Biometrics configured successfully",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
-    private fun onErrorOrPIN(errCode: Int) {
+    private fun onErrorOrCancel(errCode: Int) {
         // Unchecked Biometric switch
         binding.biometricSwitch.isChecked = false
+
+        Toast.makeText(
+            requireContext(),
+            "ERROR OR CANCEL with error code $errCode",
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     private fun onFail() {
-        // TODO
+        Toast.makeText(requireContext(), "FAILED", Toast.LENGTH_SHORT).show()
     }
 
     private fun logout() {

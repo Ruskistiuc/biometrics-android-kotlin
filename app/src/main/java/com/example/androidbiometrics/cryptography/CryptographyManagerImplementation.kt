@@ -15,8 +15,11 @@ fun getCryptographyManager(): CryptographyManagerInterface =
     CryptographyManagerImplementation()
 
 /**
- * To get an instance of this private CryptographyManagerImpl class, use the top-level function
- * fun CryptographyManager(): CryptographyManager = CryptographyManagerImpl()
+ * Using BiometricPrompt with CryptoObject: How and Why
+ * https://medium.com/androiddevelopers/using-biometricprompt-with-cryptoobject-how-and-why-aace500ccdb7
+ *
+ * Separation of concerns is indeed real, the CryptographyManagerImplementation is declared private
+ * so that the client code only sees the interface and its method signatures.
  */
 private class CryptographyManagerImplementation : CryptographyManagerInterface {
 
@@ -30,6 +33,14 @@ private class CryptographyManagerImplementation : CryptographyManagerInterface {
 
     override fun getInitializedCipherForEncryption(keyName: String): Cipher {
         val cipher = getCipher()
+
+        /**
+         * In cryptography, an adversary cannot read encrypted data without the secret key.
+         * SecretKey object that references the underlying cryptographic secret key.
+         * Only someone with this secret key can use the cipher to decrypt your data.
+         * On Android, secret keys should be kept in a secure system called the Android Keystore.
+         * The hardware managed by Keystore cannot be accessed unless the user is present.
+         * */
         val secretKey = getOrCreateSecretKey(keyName)
         cipher.init(Cipher.ENCRYPT_MODE, secretKey)
         return cipher
@@ -61,12 +72,15 @@ private class CryptographyManagerImplementation : CryptographyManagerInterface {
     }
 
     private fun getOrCreateSecretKey(keyName: String): SecretKey {
-        // If SecretKey was previously created for that keyName, then grab and return it.
+        /** If SecretKey was previously created for that keyName, then grab and return it. */
         val keyStore = KeyStore.getInstance(ANDROID_KEYSTORE)
-        keyStore.load(null) // Keystore must be loaded before it can be accessed
-        keyStore.getKey(keyName, null)?.let { return it as SecretKey }
+        /** Keystore must be loaded before it can be accessed */
+        keyStore.load(null)
+        keyStore.getKey(keyName, null)?.let {
+            return it as SecretKey
+        }
 
-        // if you reach here, then a new SecretKey must be generated for that keyName
+        /** if you reach here, then a new SecretKey must be generated for that keyName */
         val paramsBuilder = KeyGenParameterSpec.Builder(
             keyName,
             KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
@@ -76,6 +90,12 @@ private class CryptographyManagerImplementation : CryptographyManagerInterface {
             setEncryptionPaddings(ENCRYPTION_PADDING)
             setKeySize(KEY_SIZE)
             setUserAuthenticationRequired(true)
+            /**
+             * Invalidate the keys if the user has registered a new biometric credential, such as
+             * a new fingerprint. Can call this method only on Android 7.0 (API level 24) or higher.
+             * The variable "invalidatedByBiometricEnrollment" is true by default.
+             */
+            setInvalidatedByBiometricEnrollment(true)
         }
 
         val keyGenParams = paramsBuilder.build()
@@ -84,6 +104,7 @@ private class CryptographyManagerImplementation : CryptographyManagerInterface {
             ANDROID_KEYSTORE
         )
         keyGenerator.init(keyGenParams)
+
         return keyGenerator.generateKey()
     }
 

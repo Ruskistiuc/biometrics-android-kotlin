@@ -86,7 +86,6 @@ class BiometricsVerificationActivity : AppCompatActivity() {
 
     private fun showBiometricPromptForDecryption() {
         cipherTextWrapper?.let { textWrapper ->
-            // TODO what is secretKeyName ? Get Secret Key alias from the app's memory
             val secretKeyName = getString(R.string.secret_key_name)
             val cipher = cryptographyManager.getInitializedCipherForDecryption(
                 secretKeyName,
@@ -98,11 +97,14 @@ class BiometricsVerificationActivity : AppCompatActivity() {
                     this,
                     ::onSuccess,
                     ::onFail,
-                    ::onErrorOrPIN
+                    ::onErrorOrCancel
                 )
 
             val promptInfo = BiometricPromptUtils.createPromptInfo(this)
             biometricPrompt.authenticate(promptInfo, BiometricPrompt.CryptoObject(cipher))
+
+            // TODO in order to support setDeviceCredentialAllowed inside createPromptInfo we need to ignore CryptoObject
+            // biometricPrompt.authenticate(promptInfo)
         }
     }
 
@@ -136,7 +138,11 @@ class BiometricsVerificationActivity : AppCompatActivity() {
         Toast.makeText(this, "FAILED", Toast.LENGTH_SHORT).show()
     }
 
-    private fun onErrorOrPIN(errCode: Int) {
-        Toast.makeText(this, "ERROR OR PIN", Toast.LENGTH_SHORT).show()
+    private fun onErrorOrCancel(errCode: Int) {
+        Toast.makeText(
+            this,
+            "ERROR OR CANCEL with error code $errCode",
+            Toast.LENGTH_SHORT
+        ).show()
     }
 }
